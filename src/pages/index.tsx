@@ -8,35 +8,15 @@ import { api } from '../services/api';
 import { Loading } from '../components/Loading';
 import { Error } from '../components/Error';
 
-interface FetchProjectsParams {
-  pageParam?: number;
-}
-
-interface Image {
-  title: string;
-  description: string;
-  url: string;
-  ts: number;
-  id: string;
-}
-
-interface FetchProjectsData {
-  pages: {
-    data: Image[];
-    after: string;
-  };
-  pageParams: string[];
-}
-
 export default function Home(): JSX.Element {
-  const fetchProjects = async ({
-    pageParam = null,
-  }: FetchProjectsParams): Promise<FetchProjectsData> => {
-    const url = pageParam ? `/api/images?after=${pageParam}` : `/api/images`;
+  const fetchProjects = async ({ pageParam = 0 }) => {
+    const { data: images } = await api.get('/api/images', {
+      params: {
+        after: pageParam,
+      },
+    });
 
-    const { data } = await api.get(url);
-
-    return data;
+    return images;
   };
 
   const {
@@ -53,13 +33,7 @@ export default function Home(): JSX.Element {
   });
 
   const formattedData = useMemo(() => {
-    if (!data || !data?.pages || data?.pages?.length === 0) {
-      return [];
-    }
-
-    const informations = data.pages.flatMap(page => page?.pages?.data);
-
-    return informations;
+    return data?.pages.map(page => page.data).flat();
   }, [data]);
 
   if (isLoading) {
@@ -75,10 +49,14 @@ export default function Home(): JSX.Element {
       <Header />
 
       <Box maxW={1120} px={20} mx="auto" my={20}>
-        <CardList cards={formattedData} />
+        {formattedData.length > 0 && <CardList cards={formattedData} />}
         {hasNextPage && (
-          <Button onClick={() => fetchNextPage()}>
-            {isFetchingNextPage ? 'Carregando...' : 'Carregar mais'}
+          <Button
+            onClick={() => fetchNextPage()}
+            isLoading={isFetchingNextPage}
+            loadingText="Carregando..."
+          >
+            Carregar mais
           </Button>
         )}
       </Box>
