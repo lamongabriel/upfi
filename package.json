@@ -9,9 +9,6 @@
     "test": "jest --watchAll",
     "coverage": "jest --coverage"
   },
-  "engines": {
-    "node": "18.16.1"
-  },
   "dependencies": {
     "@chakra-ui/react": "1.4.1",
     "@emotion/react": "^11",
