@@ -37,7 +37,11 @@ export function CardList({ cards }: CardsProps): JSX.Element {
         ))}
       </SimpleGrid>
 
-      {/* TODO MODALVIEWIMAGE */}
+      <ModalViewImage
+        imgUrl={selectedImageURL}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
     </>
   );
 }
