@@ -31,7 +31,7 @@ import {
 import { FiAlertCircle, FiPlus } from 'react-icons/fi';
 import { api } from '../../services/api';
 
-import { FormData } from '../Form/FormAddImage';
+import { FormDataAddImage } from '../Form/FormAddImage';
 
 export interface FileInputProps {
   name: string;
@@ -43,7 +43,7 @@ export interface FileInputProps {
   onChange: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => Promise<boolean | void>;
-  trigger: UseFormTrigger<FormData>;
+  trigger: UseFormTrigger<FormDataAddImage>;
 }
 
 const FileInputBase: ForwardRefRenderFunction<

@@ -17,7 +17,7 @@ interface FormValidations {
   description: RegisterOptions;
 }
 
-export interface FormData {
+export interface FormDataAddImage {
   title: string;
   description: string;
   image: FileList;
@@ -68,10 +68,10 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
   });
 
   const { register, handleSubmit, reset, formState, setError, trigger } =
-    useForm<FormData>();
+    useForm<FormDataAddImage>();
   const { errors } = formState;
 
-  const onSubmit = async (data: FormData): Promise<void> => {
+  const onSubmit = async (data: FormDataAddImage): Promise<void> => {
     try {
       if (!imageUrl) {
         toast({
