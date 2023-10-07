@@ -8,8 +8,21 @@ import { api } from '../services/api';
 import { Loading } from '../components/Loading';
 import { Error } from '../components/Error';
 
+interface GetImagesAPIResponse {
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    ts: number;
+    url: string;
+  }[];
+  after?: string;
+}
+
 export default function Home(): JSX.Element {
-  const fetchProjects = async ({ pageParam = 0 }) => {
+  const fetchProjects = async ({
+    pageParam = null,
+  }): Promise<GetImagesAPIResponse> => {
     const { data: images } = await api.get('/api/images', {
       params: {
         after: pageParam,
@@ -18,6 +31,10 @@ export default function Home(): JSX.Element {
 
     return images;
   };
+
+  function getNextPageParam({ after }: GetImagesAPIResponse): string | null {
+    return after || null;
+  }
 
   const {
     data,
@@ -29,11 +46,13 @@ export default function Home(): JSX.Element {
   } = useInfiniteQuery({
     queryKey: 'images',
     queryFn: fetchProjects,
-    getNextPageParam: lastPage => lastPage?.pages?.after ?? null,
+    getNextPageParam,
   });
 
   const formattedData = useMemo(() => {
-    return data?.pages.map(page => page.data).flat();
+    if (!data || !data?.pages) return [];
+
+    return data.pages.map(page => page.data).flat(1);
   }, [data]);
 
   if (isLoading) {
@@ -49,9 +68,10 @@ export default function Home(): JSX.Element {
       <Header />
 
       <Box maxW={1120} px={20} mx="auto" my={20}>
-        {formattedData.length > 0 && <CardList cards={formattedData} />}
+        {formattedData?.length > 0 && <CardList cards={formattedData} />}
         {hasNextPage && (
           <Button
+            mt={8}
             role="button"
             onClick={() => fetchNextPage()}
             isLoading={isFetchingNextPage}
