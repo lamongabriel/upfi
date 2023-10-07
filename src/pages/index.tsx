@@ -52,6 +52,7 @@ export default function Home(): JSX.Element {
         {formattedData.length > 0 && <CardList cards={formattedData} />}
         {hasNextPage && (
           <Button
+            role="button"
             onClick={() => fetchNextPage()}
             isLoading={isFetchingNextPage}
             loadingText="Carregando..."
